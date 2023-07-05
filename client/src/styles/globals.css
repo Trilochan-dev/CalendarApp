@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+}
+
+.rmdp-shadow {
+  box-shadow: none !important;
+}
+
+.rmdp-ep-arrow {
+  visibility: hidden !important;
+}
+
+.rmdp-day.rmdp-selected span:not(.highlight) {
+  background-color: #614b79 !important;
+}
+
+.rmdp-week-day {
+  color: #8e8e8e !important;
+}
+
+.rmdp-arrow-container:hover {
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.rmdp-arrow {
+  border-color: #8e8e8e !important;
+}
+
+.rmdp-calendar {
+  left: -11px !important;
+  top: 4px !important;
+  padding: 5px 10px !important;
+}
+
+
+.rmdp-header-values {
+  font-weight: 700;
+}
+
+.rmdp-header-values span {
+  padding: 0 !important;
+}
+
+.rmdp-day.rmdp-today span {
+  background-color: #614b79 !important;
+}
+
+.rmdp-day:not(.rmdp-disabled):not(.rmdp-day-hidden) span:hover {
+  background-color: #614b79 !important;
+}
+
+.eventInput {
+  @apply outline-none bg-slate-300/10 rounded-sm border-b-2 py-2 border-[#1F65C8] placeholder-gray-500 transition-all w-full
+}
