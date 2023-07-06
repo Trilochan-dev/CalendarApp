@@ -6,15 +6,13 @@ import { TiTick } from 'react-icons/ti';
 import { ImCross } from 'react-icons/im';
 
 
-export default function AddTask({ width = "w-96", date, time, username, initialValue, handleCancel, handleSave, handleRemove }) {
+export default function AddTask({ width = "w-96", date, time, username, initialValue, handleCancel, handleSave, handleRemove = () => { }, isRemoveVisible = true }) {
     const [eventValue, setEventValue] = useState(initialValue)
     const [confirmRemove, setConfirmRemove] = useState(false);
-    
-
     return <>
         <div className={`h-96 bg-white ${width} rounded-lg shadow-lg border relative`}>
             <div className="bg-gray-100 text-gray-400 font-bold h-8 rounded-t-lg flex justify-end items-center gap-4 text-right px-4 text-lg w-full leading-8">
-                <p className='cursor-pointer' onClick={() => setConfirmRemove(true)}><FaTrash /></p>
+                {isRemoveVisible && <p className='cursor-pointer' onClick={() => setConfirmRemove(true)}><FaTrash /></p>}
                 <p className='cursor-pointer text-sm' onClick={handleCancel}><ImCross /></p>
             </div>
             <div className="p-4 flex flex-col gap-y-5">

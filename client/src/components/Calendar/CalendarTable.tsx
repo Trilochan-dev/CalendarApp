@@ -7,7 +7,7 @@ import { deleteSingleEvent } from '../services/EventService';
 import { CalendarContext } from '../../pages/_app';
 import Toastify from '../Toastify/toast';
 const Calendartable = () => {
-    const { lastDate } = useContext(CalendarContext);
+    const { lastDate, userinfo } = useContext(CalendarContext);
     const [myEventsData, setMyEventsData] = useState([])
     const [clickEvent, setClickEvent] = useState("");
     const [clickObj, setClickObj] = useState({}) as any;
@@ -34,7 +34,7 @@ const Calendartable = () => {
     }
     const getApiEventDate = () => {
         getAllEvents(`${process.env.NEXT_PUBLIC_HOST}/api/event/get-events`)
-            .then(function (data) {
+            .then(function (data: any) {
                 let newDate = data.events.map((ev, index) => ({
                     date: moment(ev.dateTime).format('YYYY-MM-DD'),
                     value: ev.title,
@@ -72,7 +72,7 @@ const Calendartable = () => {
                 Toastify({ title: "Event created succesfully" });
                 setClickEvent("");
             }).catch(function (error) {
-                Toastify({ icon: "error", title: "Error while creating event" });
+                Toastify({ showIcon: true, title: "Error while creating event" });
             })
     }
     const updateEvent = (obj) => {
@@ -82,7 +82,7 @@ const Calendartable = () => {
                 getApiEventDate();
                 setClickEvent("");
             }).catch(function (error) {
-                Toastify({ icon: "error", title: "Error while updating event" });
+                Toastify({ showIcon: true, title: "Error while updating event" });
             })
     }
     const handleCancel = () => setClickEvent("");
@@ -94,12 +94,11 @@ const Calendartable = () => {
                     getApiEventDate();
                     setClickEvent("");
                 }).catch(function (error) {
-                    Toastify({ icon: "error", title: "Error while deleting event" });
+                    Toastify({ showIcon: true, title: "Error while deleting event" });
                 })
         } else {
 
         }
-
     };
 
 
@@ -154,7 +153,7 @@ const Calendartable = () => {
                                         date={moment(clickObj?.date).format('dddd, D MMMM')}
                                         initialValue={clickObj?.value}
                                         time={clickObj?.time}
-                                        username="Trilochan Behera"
+                                        username={userinfo?.name}
                                         handleCancel={handleCancel}
                                         handleSave={handleSave}
                                         handleRemove={handleRemove}

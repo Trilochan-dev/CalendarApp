@@ -4,20 +4,35 @@ import { CalendarContext } from '../../pages/_app';
 import { startOfWeek } from 'date-fns';
 import AddTask from './AddTask';
 import moment from 'moment';
+import { createEvent } from '../services/EventService';
+import Toastify from '../Toastify/toast';
 
 const Sidebar = () => {
     const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
-    const { setlastDate } = useContext(CalendarContext);
-    const [showCalendar, setShowcalendar] = useState(false)
+    const { setlastDate, userinfo } = useContext(CalendarContext);
+    const [showCalendar, setShowcalendar] = useState(false);
     const handleSave = (eventValue) => {
+        var date = new Date();
+        const newObj = {
+            dateTime: date.getTime(),
+            timezone: moment.tz?.guess(),
+            title: eventValue
+        }
+        addEvent(newObj);
+    }
 
+    const addEvent = (obj) => {
+        createEvent(`${process.env.NEXT_PUBLIC_HOST}/api/event/create`, obj)
+            .then(function (data) {
+                Toastify({ title: "Event created succesfully" });
+                setShowcalendar(false);
+            }).catch(function (error) {
+                Toastify({ showIcon: true, title: "Error while creating event" });
+            })
     }
     const handleCancel = () => {
         setShowcalendar(false)
     }
-    const handleRemove = () => {
-
-    };
 
     return (
         <div className='flex flex-col gap-2'>
@@ -44,14 +59,13 @@ const Sidebar = () => {
                         date={moment(new Date()).format('dddd, D MMMM')}
                         initialValue={""}
                         time={moment(new Date()).format('hh:mm a')}
-                        username="Trilochan Behera"
+                        username={userinfo?.name}
                         handleCancel={handleCancel}
                         handleSave={handleSave}
-                        handleRemove={handleRemove}
+                        isRemoveVisible={false}
                     />
                 </div>
             }
-
         </div>
     );
 };

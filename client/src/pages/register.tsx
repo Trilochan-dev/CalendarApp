@@ -17,14 +17,14 @@ const Register = () => {
     setIsLoading(true);
     const url = `${process.env.NEXT_PUBLIC_HOST}/api/user/register`;
     authenticateApi(url, formData)
-      .then(function (data) {
+      .then(function (data: any) {
         setIsLoading(false);
-        Toastify({ title: data.message });
+        Toastify({ title: "Register Successfully" });
         router.push("/login");
       })
       .catch(function (error) {
         setIsLoading(false);
-        Toastify({ icon: "error", title: error });
+        Toastify({ showIcon: true, title: error });
       });
   };
   return (

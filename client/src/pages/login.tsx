@@ -17,16 +17,16 @@ const Login = () => {
     setIsLoading(true);
     const url = `${process.env.NEXT_PUBLIC_HOST}/api/user/login`
     authenticateApi(url, formData)
-      .then(function (data) {
+      .then(function (data: any) {
         setIsLoading(false);
-        Toastify({ title: data.message });
+        Toastify({ title: "Login Successfully" });
         localStorage.setItem('login_token', JSON.stringify(data.token))
         localStorage.setItem('user_info', JSON.stringify(data.user))
         router.push('/')
       })
       .catch(function (error) {
         setIsLoading(false);
-        Toastify({ icon: "error", title: error });
+        Toastify({ showIcon: true, title: error });
       })
   }
   return (

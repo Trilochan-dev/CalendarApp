@@ -1,15 +1,17 @@
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai';
 import { FaCircleUser } from 'react-icons/fa6';
+import { FiLogOut } from 'react-icons/fi';
 import { useContext, useEffect, useState } from 'react';
 import { addDays, format, startOfWeek } from "date-fns";
 import { CalendarContext } from '../../pages/_app';
-
+import { useRouter } from 'next/router';
 
 const Navbar = () => {
-    const { lastDate, setlastDate } = useContext(CalendarContext);
+    const { lastDate, setlastDate, userinfo } = useContext(CalendarContext);
     const [date, setDate] = useState() as any;
-    
+    const [showUser, setShowUser] = useState(false);
+    const router = useRouter();
     useEffect(() => {
         let startofWeek = format(lastDate, "MMM");
         let endofWeek = format(addDays(new Date(lastDate), 6), "MMM");
@@ -31,6 +33,11 @@ const Navbar = () => {
         setlastDate(lastdateValue)
     }
 
+    const handleSignOut = () => {
+        localStorage.removeItem("user_info");
+        localStorage.removeItem("login_token");
+        router.push('/login');
+    }
     return (
         <div className="flex justify-between items-center w-full">
             <div className="flex gap-12 items-center">
@@ -56,8 +63,21 @@ const Navbar = () => {
                     <p className='text-[#3c4043] font-bold text-[16px] leading-5 '>{date}</p>
                 </div>
             </div>
-            <div className="flex items-center justify-end relative ">
-                <div className='text-4xl text-gray-500 cursor-pointer'><FaCircleUser /></div>
+            <div className="flex items-center justify-end relative">
+                <div className='text-4xl text-gray-500 cursor-pointer' onClick={(prev) => setShowUser(!showUser)}>
+                    <FaCircleUser />
+                </div>
+                {
+                    showUser &&
+                    <div className='absolute -bottom-[5.5rem] mt-4 bg-calendar-purple px-8 rounded-lg w-40 py-4 text-white font-bold'>
+                        <p>Hi, {userinfo?.name}</p>
+                        <div className='flex items-center gap-4 font-bold cursor-pointer' onClick={() => handleSignOut()}>
+                            <p>Sign out</p>
+                            <FiLogOut />
+                        </div>
+                    </div>
+                }
+
             </div>
         </div>
     )

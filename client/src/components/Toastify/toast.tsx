@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2'
 
-export default function Toastify({ icon = "success", title = "Success" }) {
+export default function Toastify({ showIcon = false, title = "Success" }) {
   const Toast = Swal.mixin({
     toast: true,
     position: "top-end",
@@ -12,11 +12,18 @@ export default function Toastify({ icon = "success", title = "Success" }) {
       toast.addEventListener("mouseleave", Swal.resumeTimer);
     },
   });
+  if (showIcon) {
+    Toast.fire({
+      icon: "error",
+      title: title,
+    });
+  } else {
+    Toast.fire({
+      icon: "success",
+      title: title,
+    });
+  }
 
-  Toast.fire({
-    icon: icon,
-    title: title,
-  });
 
   return <></>;
 }
