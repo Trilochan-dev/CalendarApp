@@ -1,71 +1,83 @@
-const Event = require('../model/event');
-const User = require('../model/user');
+const Event = require("../model/event");
+const User = require("../model/user");
+const moment = require('moment');
+
 
 const createEvent = async (req, res) => {
-    const { title, dateTime, timezone } = req.body;
-    const userId = req.userId;
+  const { title, date, timezone, start_time, duration } = req.body;
+  const userId = req.userId;
+  const today = moment().startOf('day');
+  const givenDate = moment(date).startOf('day');
 
-    try {
-        const event = await Event.create({ title, dateTime, timezone, user: userId });
+  const isBeforeToday = givenDate.isBefore(today);
+  if(isBeforeToday){
+   return res.status(500).json({ message: "Event can't be create in past" })
+  }
+  try {
+    const event = await Event.create({
+      title,
+      date,
+      timezone,
+      user: userId,
+      start_time,
+      duration,
+    });
 
-        // Update the user's events array
-        await User.findByIdAndUpdate(userId, { $push: { events: event._id } });
+    // Update the user's events array
+    await User.findByIdAndUpdate(userId, { $push: { events: event._id } });
 
-        res.status(201).json({ success: true, data: event });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Server error' });
-    }
-}
-
+    res.status(201).json({ success: true, data: event });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error while creating event" });
+  }
+};
 const getAllEvents = async (req, res) => {
-    const userId = req.userId;
+  const userId = req.userId;
 
-    try {
-        const events = await User.findById(userId)
-            .populate('events');
-
-        return res.json(events);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Server error' });
-    }
-}
-
+  try {
+    const events = await User.findById(userId).populate("events");
+    return res.json(events);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 const updateEvent = async (req, res) => {
-    try {
-        const eventId = req.params.id;
-        const { title, dateTime, timezone } = req.body;
+  try {
+    const eventId = req.params.id;
+    const { title, date, timezone, start_time, duration } = req.body;
 
-        // Find the event by ID and update its title and date
-        const updatedEvent = await Event.findByIdAndUpdate(
-            eventId,
-            { title, dateTime, timezone },
-            { new: true }
-        );
+    // Find the event by ID and update its title and date
+    const updatedEvent = await Event.findByIdAndUpdate(
+      eventId,
+      { title, date, timezone, start_time, duration },
+      { new: true }
+    );
 
-        res.status(200).json({ success: true, event: updatedEvent });
-    } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
-    }
+    res.status(200).json({ success: true, event: updatedEvent });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 };
-
 
 const deleteEvent = async (req, res) => {
-    try {
-        const eventId = req.params.id;
-        const userId = req.userId;
+  try {
+    const eventId = req.params.id;
+    const userId = req.userId;
 
-        // Find and delete the event
-        await Event.findByIdAndDelete(eventId);
+    // Find and delete the event
+    await Event.findByIdAndDelete(eventId);
 
-        // Remove the event ID from the user's events array
-        await User.findByIdAndUpdate(userId, { $pull: { events: eventId } });
+    // Remove the event ID from the user's events array
+    await User.findByIdAndUpdate(userId, { $pull: { events: eventId } });
 
-        res.status(200).json({ success: true, message: 'Event deleted successfully' });
-    } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
-    }
+    res
+      .status(200)
+      .json({ success: true, message: "Event deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 };
-module.exports = { createEvent, getAllEvents, updateEvent, deleteEvent }
+module.exports = { createEvent, getAllEvents, updateEvent, deleteEvent };
