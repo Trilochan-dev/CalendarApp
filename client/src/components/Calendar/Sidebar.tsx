@@ -9,14 +9,21 @@ import Toastify from '../Toastify/toast';
 
 const Sidebar = () => {
     const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
-    const { setlastDate, userinfo } = useContext(CalendarContext);
+    const { setlastDate, userinfo, setApiCall } = useContext(CalendarContext);
     const [showCalendar, setShowcalendar] = useState(false);
+    const [clickObj, setClickObj] = useState({
+        "date": moment(new Date()).format('YYYY-MM-DD'),
+        "duration": "60",
+        "start_time": moment(new Date()).format('HH:mm')
+    });
+
     const handleSave = (eventValue) => {
-        var date = new Date();
         const newObj = {
-            dateTime: date.getTime(),
+            date: new Date(clickObj.date),
             timezone: moment.tz?.guess(),
-            title: eventValue
+            title: eventValue,
+            start_time: clickObj?.start_time,
+            duration: clickObj?.duration,
         }
         addEvent(newObj);
     }
@@ -25,6 +32,7 @@ const Sidebar = () => {
         createEvent(`${process.env.NEXT_PUBLIC_HOST}/api/event/create`, obj)
             .then(function (data) {
                 Toastify({ title: "Event created succesfully" });
+                setApiCall(true);
                 setShowcalendar(false);
             }).catch(function (error) {
                 Toastify({ showIcon: true, title: "Error while creating event" });
@@ -56,9 +64,8 @@ const Sidebar = () => {
                 showCalendar &&
                 <div className="w-40">
                     <AddTask
-                        date={moment(new Date()).format('dddd, D MMMM')}
-                        initialValue={""}
-                        time={moment(new Date()).format('hh:mm a')}
+                        clickObj={clickObj}
+                        setClickObj={setClickObj}
                         username={userinfo?.name}
                         handleCancel={handleCancel}
                         handleSave={handleSave}
