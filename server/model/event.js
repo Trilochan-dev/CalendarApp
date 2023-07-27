@@ -6,8 +6,8 @@ const eventSchema = new mongoDB.Schema(
       type: String,
       require: true,
     },
-    dateTime: {
-      type: Number,
+    date: {
+      type: String,
       require: true,
     },
     is_mail_sent: {
@@ -15,6 +15,14 @@ const eventSchema = new mongoDB.Schema(
       default: false,
     },
     timeZone: {
+      type: String,
+      required: false,
+    },
+    start_time: {
+      type: String,
+      required: true,
+    },
+    duration: {
       type: String,
       required: false,
     },
