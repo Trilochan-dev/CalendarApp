@@ -53,8 +53,13 @@ const login = async (req, res) => {
 
     // Generate a JWT
     const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY);
+    
+    const userData = {
+      email: user.email,
+      name: user.name,
+    };
 
-    res.json({ token, user });
+    res.json({ token, userData });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
