@@ -1,19 +1,22 @@
 const Event = require("../model/event");
 const User = require("../model/user");
-const moment = require('moment');
-
+const moment = require("moment");
 
 const createEvent = async (req, res) => {
   const { title, date, timezone, start_time, duration } = req.body;
   const userId = req.userId;
-  const today = moment().startOf('day');
-  const givenDate = moment(date).startOf('day');
+  const today = moment().startOf("day");
+  const givenDate = moment(date).startOf("day");
 
   const isBeforeToday = givenDate.isBefore(today);
-  if(isBeforeToday){
-   return res.status(500).json({ message: "Event can't be create in past" })
+  if (isBeforeToday) {
+    return res.status(500).json({ message: "Event can't be create in past" });
   }
   try {
+    const startTime = moment(start_time, "HH:mm:ss"); // Replace with your start time
+    // Calculate the end time
+    const endTime = startTime.clone().add(duration, "minutes");
+
     const event = await Event.create({
       title,
       date,
@@ -21,6 +24,7 @@ const createEvent = async (req, res) => {
       user: userId,
       start_time,
       duration,
+      end_time: endTime.format("HH:mm:ss"),
     });
 
     // Update the user's events array
@@ -36,7 +40,9 @@ const getAllEvents = async (req, res) => {
   const userId = req.userId;
 
   try {
-    const events = await User.findById(userId).populate("events");
+    const events = await User.findById(userId)
+      .select("-password -createdAt -updatedAt")
+      .populate("events");
     return res.json(events);
   } catch (error) {
     console.log(error);
@@ -49,10 +55,21 @@ const updateEvent = async (req, res) => {
     const eventId = req.params.id;
     const { title, date, timezone, start_time, duration } = req.body;
 
+    const startTime = moment(start_time, "HH:mm:ss"); // Replace with your start time
+    // Calculate the end time
+    const endTime = startTime.clone().add(duration, "minutes");
+
     // Find the event by ID and update its title and date
     const updatedEvent = await Event.findByIdAndUpdate(
       eventId,
-      { title, date, timezone, start_time, duration },
+      {
+        title,
+        date,
+        timezone,
+        start_time,
+        duration,
+        end_time: endTime.format("HH:mm:ss"),
+      },
       { new: true }
     );
 
