@@ -21,7 +21,7 @@ const Login = () => {
         setIsLoading(false);
         Toastify({ title: "Login Successfully" });
         localStorage.setItem('login_token', JSON.stringify(data.token))
-        localStorage.setItem('user_info', JSON.stringify(data.user))
+        localStorage.setItem('user_info', JSON.stringify(data.userData))
         router.push('/')
       })
       .catch(function (error) {
