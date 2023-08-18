@@ -1,6 +1,7 @@
 const nodeMailer = require("nodemailer");
 const moment = require("moment-timezone");
 const Event = require("../model/event");
+
 require("dotenv").config();
 
 const transporter = nodeMailer.createTransport({
@@ -14,30 +15,38 @@ const transporter = nodeMailer.createTransport({
 });
 
 async function sendMail(req, res) {
-  const currentTime = new Date().getTime();
-  const tenMinutesLater = currentTime + 10 * 60 * 1000;
+  const currentTime = moment();
+  const modifiedTime = currentTime.add(10, "minutes");
+  // Format the modified time as hh:mm:ss
+  const formattedTime = modifiedTime.format("HH:mm:ss");
+
   const events = await Event.find({
-    dateTime: { $gte: currentTime, $lt: tenMinutesLater },
+    end_time: formattedTime,
     is_mail_sent: false,
   }).populate("user");
 
   if (!events.length) {
-    console.log("No events found");
     return;
   }
+  const eventLink = "https://calendar-app-new.vercel.app/";
+
   for (const event of events) {
-    const { user, title, dateTime, timezone } = event;
+    const { user, title } = event;
     const mailOptions = {
       from: process.env.NODEMAILER_USER,
       to: user.email,
-      subject: "Event Reminder",
+      subject: "Calendar App Reminder",
       text: `
-      Event ${title} is starting at ${moment(dateTime)
-        .tz(timezone)
-        .format("lll")}.  Don't forget to attend !
-        `,
+      Hello,
+      
+      This is a friendly reminder that the "${title}" event is scheduled to start at ${formattedTime}. We hope to see you there!
+      
+      You can find more details about the event here: ${eventLink}
+      
+      Best regards,
+      Calendar App
+      `,
     };
-
     transporter.sendMail(mailOptions, async (err, info) => {
       if (err) {
         console.log("Email send failed", err);
@@ -45,7 +54,7 @@ async function sendMail(req, res) {
       }
       event.is_mail_sent = true;
       await event.save();
-      console.log("Email sent successfully", info.response);
+      console.log("Email sent successfully");
     });
   }
 }
