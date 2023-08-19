@@ -39,7 +39,7 @@ async function sendMail(req, res) {
       text: `
       Hello,
       
-      This is a friendly reminder that the "${title}" event is scheduled to start at ${formattedTime}. We hope to see you there!
+      This is a friendly reminder that the "${title}" event is scheduled to start at ${formattedTime.format("hh:mm A")}. We hope to see you there!
       
       You can find more details about the event here: ${eventLink}
       
