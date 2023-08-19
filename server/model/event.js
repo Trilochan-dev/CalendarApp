@@ -22,6 +22,10 @@ const eventSchema = new mongoDB.Schema(
       type: String,
       required: true,
     },
+    end_time: {
+      type: String,
+      required: true,
+    },
     duration: {
       type: String,
       required: false,
