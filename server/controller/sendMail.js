@@ -39,9 +39,9 @@ async function sendMail(req, res) {
       text: `
       Hello,
       
-      This is a friendly reminder that the "${title}" event is scheduled to start at ${formattedTime.format("hh:mm A")}. We hope to see you there!
+      This is a friendly reminder that the "${title}" event is scheduled to start at ${modifiedTime.format("hh:mm A")}. We hope to see you there!
       
-      You can find more details about the event here: ${eventLink}
+      You can find more details about the event here: https://calendar-app-new.vercel.app/
       
       Best regards,
       Calendar App
