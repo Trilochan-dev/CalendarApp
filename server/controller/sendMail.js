@@ -28,7 +28,6 @@ async function sendMail(req, res) {
   if (!events.length) {
     return;
   }
-  const eventLink = "https://calendar-app-new.vercel.app/";
 
   for (const event of events) {
     const { user, title } = event;
