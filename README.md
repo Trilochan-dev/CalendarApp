@@ -54,5 +54,5 @@ git clone https://github.com/trilochan-behera-dev/Time-Wise.git
 cd Time-Wise
 ```
 ## Visit TimeWise Website 🌐
-Explore TimeWise live at https://time-wisez.vercel.app/
+Explore TimeWise live at https://time-wisez.vercel.app
 
